@@ -1,5 +1,3 @@
-I am in the process of verofying the install.sh and samba_setup.sh - completed soon
-
 # Pirate MP3
 
 A quick and dirty MP3 player for Pirate Audio.
