@@ -43,6 +43,7 @@ Run this code on fresh install of Rasbian:
 ```
 git clone https://github.com/RatchetHamster/pirate-mp3-enhanced_options.git
 chmod +x /home/pi/pirate-mp3-enhanced_options/mp3/install.sh
+sudo apt-get install python3-pip
 sudo /home/pi/pirate-mp3-enhanced_options/mp3/install.sh
 ```
 The install file does the following:
