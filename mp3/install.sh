@@ -8,6 +8,7 @@
 # Update and upgrade
 sudo apt update
 sudo apt upgrade
+sudo apt-get pulseaudio
 
 # Create, activate and install packages on virtural python env. 
 python3 -m venv /home/pi/pirate-mp3-enhanced_options/venv
