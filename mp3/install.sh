@@ -27,7 +27,7 @@ add_to_config_text "dtoverlay=hifiberry-dac" /boot/firmware/config.txt 5
 
 # Run on boot (modify /etc/rc.local so that module runs on boot)
 # check: /tmp/rc.local.log for errors, warnings and outputs
-add_to_config_text 'su --command "PYTHONPATH=\/home\/pi\/pirate-mp3-enhanced_options \/home\/pi\/pirate-mp3-enhanced_options\/.venv\/bin\/python3 -m mp3" --login pi' /etc/rc.local 19
+add_to_config_text 'su --command "PYTHONPATH=\/home\/pi\/pirate-mp3-enhanced_options \/home\/pi\/pirate-mp3-enhanced_options\/venv\/bin\/python3 -m mp3" --login pi' /etc/rc.local 19
 add_to_config_text "set -x" /etc/rc.local 19
 add_to_config_text "exec 1>&2" /etc/rc.local 19
 add_to_config_text "exec 2> \/tmp\/rc.local.log" /etc/rc.local 19
