@@ -16,7 +16,7 @@ function add_to_config_text {
 }
 
 add_to_config_text "[pirateMP3]" /etc/samba/smb.conf
-add_to_config_text "path = /home/pi/pirate-mp3/music" /etc/samba/smb.conf
+add_to_config_text "path = /home/pi/pirate-mp3-enhanced_options/music" /etc/samba/smb.conf
 add_to_config_text "writeable = yes" /etc/samba/smb.conf
 add_to_config_text "browseable = yes" /etc/samba/smb.conf
 add_to_config_text "public=no" /etc/samba/smb.conf
