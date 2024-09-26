@@ -1,3 +1,5 @@
+Bugs in install.sh worked out - needs a final install check from clean slate to verify, but should be ok. 
+
 # Pirate MP3
 
 A quick and dirty MP3 player for Pirate Audio.
