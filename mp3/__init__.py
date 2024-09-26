@@ -12,8 +12,10 @@ from subprocess import call
 import os
 from pathlib import Path
 
+
 # TODO:
-# Auto start on boot - "PYTHONPATH=/home/pi/pirate-mp3 python3 -m mp3"
+# install.sh file - test with clean lite install (backup first)
+# Update Git
 
 # Orginal files from: https://github.com/Gadgetoid/pirate-mp3.git
 ##### Modifications to pirate-mp3 by RatchetHamster
@@ -24,13 +26,36 @@ from pathlib import Path
 # Album view: sleep menu (short press); on/off (long press) - top left button
 # Album view: vol +/- persistant volume change and vol indicator
 # Album view: auto play first track album when selected
-# Default Album art when no cover present
+# Album view: only draw +/-1 albums for screen (save on processing)
 # Track view: fix view track as current track when go into
 # Track view: persistant scroll (long press) moves in jumps of 5. 
+# Track view: draw only +/- 2 tracks for screen (save on processing)
+# Default Album art when no cover present
 # Auto play on start up (option to turn on and off) by setting "is_playonstartup"
+# Auto play next track - Auto next album
+# Auto Sync to a networked folder (i.e. pull files from a persistant media source)
+# Import Sorted alphabetically for album and track NAMES (not meta title)
 # Pseduo shutdown/sleep; Pseduo wake with button 'A' long press
 
+#region -----USER SETTINGS-----
+
+sleep_times = [None, 1*60*60, 2*60*60, 3*60*60, 4*60*60] # (sec) times that appear in sleep menu
+sleep_index = 2   #default index in the sleep times list - set to 0 to turn off by default
+
+long_press_dur = 1 #seconds
+is_playonstartup = True # Set to true to autoplay when turned on, false otherwise. 
+
+# Autosync files over network:
+is_autosync = False  # setting this to true will make sure the local_rpi_dir is the same as source_dir on a network
+local_rpi_dir = "/home/pi/pirate-mp3/music"
+source_dir = "" #eg: //PC/share/dir
+source_username = "pi"
+source_password = "" #Password for access to network folder
+
+#endregion -------------------
+
 mixer.init()
+os.system("amixer set Master 100%")
 mixer.music.set_volume(1) #Start at max vol. 
 
 font = ImageFont.truetype(UserFont, 16)
@@ -65,12 +90,22 @@ def pseduo_shutdown(backlight, library):
     # the screen off and stop all playing audio. 
     # This also allows for a "wake" to be implimented - but the program
     # and pi are still running. 
+    global but_press_time
+    global persistU_i
+    global persistD_i 
+    but_press_time={
+        "A": None,
+        "B": None, 
+        "X": None, 
+        "Y": None}
+    persistU_i = 0 
+    persistD_i = 0
     library.stop()
     backlight.ChangeDutyCycle(0) #turn off backlight
     return True
 
 def pseduo_wake(backlight):
-    global is_startup 
+    global is_startup
     is_startup = True #maintains auto play or not. 
     backlight.ChangeDutyCycle(100) #turn on backlight
     return False
@@ -153,7 +188,8 @@ class Album:
         self.art = Image.blend(self.image.resize((DISPLAY_W, DISPLAY_H)), Image.new("RGB", (DISPLAY_W, DISPLAY_H), (0, 0, 0)), alpha=0.8)
         self.thumb = self.image.resize((DISPLAY_W // 2, DISPLAY_H // 2))
         source = list(path.glob("*.mp3"))
-        for file in list(source):
+        source = sorted(source)
+        for file in source:
             self.tracks.append(Track(file))
 
     @property
@@ -193,7 +229,8 @@ class Library:
         self.current_index = 0
 
         #Janner Change to include default album art (cover_art_path supplied to album as full path not fname): 
-        subfolders = [ Path(f.path) for f in os.scandir(root) if f.is_dir() ]
+        allfold = sorted(os.scandir(root), key=lambda e: e.name)
+        subfolders = [ Path(f.path) for f in allfold if f.is_dir() ]
         for file in subfolders:
             if os.path.exists(os.path.join(file,'cover.png')):
                 cover_art_path = os.path.join(file,'cover.png')
@@ -225,22 +262,21 @@ class Library:
 
 view = "album"
 
-sleep_times = [None, 1*60*60, 2*60*60, 3*60*60, 4*60*60]
-sleep_index = 2 #default 2 hour sleep
 sleep_start_time = time.time()
-
-long_press_dur = 1 #seconds
-
 persistU_i = 0 
 persistD_i = 0
 
 is_shutdown = False
-
 is_startup = True
-is_playonstartup = True # Set to true to autoplay when turned on, false otherwise. 
+
+but_press_time={
+        "A": None,
+        "B": None, 
+        "X": None, 
+        "Y": None}
 
 def main():
-    global view
+    global view     #way too many globals!! haha
     global sleep_index
     global sleep_start_time
     global persistD_i
@@ -248,6 +284,14 @@ def main():
     global is_shutdown
     global is_startup
     global is_playonstartup
+    global but_press_time
+
+    ### File Sync Section - This can take time on boot
+    if is_autosync:
+        os.system(f'sudo mount {source_dir} /mnt/ -o username={source_username},password={source_password}') # Mount source - may require username and password
+        os.system(f'rsync -r /mnt/ {local_rpi_dir}')
+        os.system(f'sudo umount /mnt/')
+    ###
 
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(BUTTONS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -271,12 +315,6 @@ def main():
     music_path = root.parents[0] / "music"
     print(f"Loading music from {music_path}")
     library = Library(music_path)
-
-    but_press_time={
-        "A": None,
-        "B": None, 
-        "X": None, 
-        "Y": None}
 
     def handle_button(pin):
         global view
@@ -343,16 +381,26 @@ def main():
     for pin in BUTTONS:
         GPIO.add_event_detect(pin, GPIO.BOTH, handle_button, bouncetime=50)
 
+
     while True:
         if is_startup==is_playonstartup:
             library.play()
             sleep_start_time = time.time()
             is_startup = False
-        
+
         draw = ImageDraw.Draw(canvas)
         draw.rectangle((0, 0, DISPLAY_W, DISPLAY_H), (0, 0, 0))
 
         selected_album = library.current_index
+
+        if library.albums[selected_album].playing_index!= None and not mixer.music.get_busy(): #auto play next track
+            if library.albums[selected_album].playing_index==len(library.albums[selected_album].tracks)-1: #if end of album
+                view="ablum"
+                library.next()
+                library.play()
+            else:
+                library.albums[selected_album].next()
+                library.albums[selected_album].play()
 
         if view == "album":
 
@@ -367,12 +415,18 @@ def main():
                     persistU_i+=1
                     mixer.music.set_volume(mixer.music.get_volume()+0.05)
 
-            offset_x = (DISPLAY_W // 4) - ((DISPLAY_W // 2) * selected_album)
+            offset_x = (DISPLAY_W // 4) - ((DISPLAY_W // 2 +20) * selected_album)
             
-            item = 0
-            for album in library.albums:
-                canvas.paste(album.thumb, (offset_x + (140 * item), 60), None)
-                item += 1
+            from_album = selected_album-1
+            if from_album<0:
+                from_album = selected_album
+            to_album = selected_album + 2
+            if to_album>len(library.albums):
+                to_album = selected_album+1
+
+            for i in range(from_album,to_album):
+                album = library.albums[i]
+                canvas.paste(album.thumb, (offset_x + (140 * i), 60), None)
 
             text_in_rect(draw, library.current_album.title, font, (26, DISPLAY_H - 60, DISPLAY_W - 26, DISPLAY_H), line_spacing=1.1, textcolor=(255, 255, 255))
 
@@ -401,7 +455,7 @@ def main():
         elif view == "track":
             # Persistant scroll control: 
             time_scroll_inc = 0.7 #seconds
-            skip_per_scroll = 5
+            skip_per_scroll = 2
             if but_press_time["X"]!=None: 
                 if time.time()-but_press_time["X"]-long_press_dur-time_scroll_inc*(persistU_i+1)>time_scroll_inc:
                     persistU_i+=1
@@ -420,23 +474,37 @@ def main():
             canvas.paste(album.art, (0, 0), None)
 
             item = 0
-            offset_y = (DISPLAY_H // 2) - 12
+            offset_y = (DISPLAY_H // 2) - 2.5*24
 
-            offset_y -= selected_track * 24
+            #offset_y -= selected_track * 24
 
             track_overlay = Image.new("RGBA", (DISPLAY_W, DISPLAY_H))
             track_draw = ImageDraw.Draw(track_overlay)
 
-            for track in album.tracks:
+            if selected_track-2<0:
+                from_track=0
+            else:
+                from_track = selected_track-2
+            if from_track+5>len(album.tracks):
+                to_track = len(album.tracks)
+                if to_track - 5<0:
+                    from_track=0
+                else: 
+                    from_track = to_track-5
+            else:
+                to_track = from_track+5
+
+            for t in range(from_track, to_track):
+                track = album.tracks[t]
                 position_y = offset_y + item * 24
                 track_draw.rectangle((0, position_y, DISPLAY_W, position_y + 24), fill=(0, 0, 0, 200) if item % 2 else (0, 0, 0, 180))
 
                 if track == album.current_playing_track:
-                    track_draw.text((5, 1 + position_y), track.title, font=font, fill=(255, 255, 255))
+                    track_draw.text((55, 1 + position_y), track.title, font=font, fill=(255, 255, 255))
                 elif track == album.current_track:
-                    track_draw.text((5, 1 + position_y), track.title, font=font, fill=(200, 200, 200))
+                    track_draw.text((55, 1 + position_y), track.title, font=font, fill=(200, 200, 200))
                 else:
-                    track_draw.text((5, 1 + position_y), track.title, font=font, fill=(64, 64, 64))
+                    track_draw.text((55, 1 + position_y), track.title, font=font, fill=(64, 64, 64))
                 item += 1
 
             canvas = Image.alpha_composite(canvas.convert("RGBA"), track_overlay)
@@ -461,6 +529,6 @@ def main():
 
 
         display.display(canvas)
-        time.sleep(1.0 / 60)
+        #time.sleep(1.0 / 20)
 
     return 1
