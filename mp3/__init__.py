@@ -47,7 +47,7 @@ is_playonstartup = True # Set to true to autoplay when turned on, false otherwis
 
 # Autosync files over network:
 is_autosync = False  # setting this to true will make sure the local_rpi_dir is the same as source_dir on a network
-local_rpi_dir = "/home/pi/pirate-mp3/music"
+local_rpi_dir = "/home/pi/pirate-mp3-enhanced_options/music"
 source_dir = "" #eg: //PC/share/dir
 source_username = "pi"
 source_password = "" #Password for access to network folder
