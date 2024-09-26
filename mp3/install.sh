@@ -25,6 +25,12 @@ function add_to_config_text {
 add_to_config_text "gpio=25=op,dh" /boot/firmware/config.txt 5
 add_to_config_text "dtoverlay=hifiberry-dac" /boot/firmware/config.txt 5
 
+# SPI
+raspi-config nonint do_spi 0
+
+# User Groups: 
+usermod -a -G spi,i2c,gpio,video,audio pi
+
 # Run on boot (modify /etc/rc.local so that module runs on boot)
 # check: /tmp/rc.local.log for errors, warnings and outputs
 add_to_config_text 'su --command "PYTHONPATH=\/home\/pi\/pirate-mp3-enhanced_options \/home\/pi\/pirate-mp3-enhanced_options\/venv\/bin\/python3 -m mp3" --login pi' /etc/rc.local 19
