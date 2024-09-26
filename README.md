@@ -42,7 +42,8 @@ Run this code on fresh install of Rasbian:
 (need to run 'sudo apt install git' if lite version of Rasbian)
 ```
 git clone https://github.com/RatchetHamster/pirate-mp3-enhanced_options.git
-/home/pi/pirate-mp3-enhanced_options/mp3/install.sh
+chmod +x /home/pi/pirate-mp3-enhanced_options/mp3/install.sh
+sudo /home/pi/pirate-mp3-enhanced_options/mp3/install.sh
 ```
 The install file does the following:
 1. Update upgrade
