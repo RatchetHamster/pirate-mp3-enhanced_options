@@ -11,4 +11,5 @@ echo "browseable = yes" >> /etc/samba/smb.conf
 echo "public=no" >> /etc/samba/smb.conf
 
 pass=123
-(echo "$pass"; echo "$pass") | smbpasswd -s -a "$SUDO_USER"
+(echo "$pass"; echo "$pass") | smbpasswd -s -a pi
+sudo systemctl restart smbd
