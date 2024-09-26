@@ -38,7 +38,7 @@ Some settings can be configured in mp3/__init__.py:
 
 ## Requirements
 
-Run this code on fresh install of Rasbian: 
+Run this code on fresh install of Rasbian (Rasbian Lite will require 'sudo apt-get install git' first): 
 ```
 git clone https://github.com/RatchetHamster/pirate-mp3-enhanced_options.git
 chmod +x /home/pi/pirate-mp3-enhanced_options/mp3/install.sh
