@@ -289,7 +289,7 @@ def main():
     ### File Sync Section - This can take time on boot
     if is_autosync:
         os.system(f'sudo mount {source_dir} /mnt/ -o username={source_username},password={source_password}') # Mount source - may require username and password
-        os.system(f'rsync -r /mnt/ {local_rpi_dir}')
+        os.system(f'rsync -a -P /mnt/ {local_rpi_dir}')
         os.system(f'sudo umount /mnt/')
     ###
 
