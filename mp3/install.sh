@@ -10,9 +10,9 @@ sudo apt update
 sudo apt upgrade
 
 # Create, activate and install packages on virtural python env. 
-python3 -m .venv /home/pi/pirate-mp3-enhanced_options
-source /home/pi/pirate-mp3-enhanced_options/.venv/bin/activate
-pip3 install /home/pi/pirate-mp3-enhanced_options/mp3/requirements.txt
+python3 -m venv /home/pi/pirate-mp3-enhanced_options
+source /home/pi/pirate-mp3-enhanced_options/venv/bin/activate
+pip install /home/pi/pirate-mp3-enhanced_options/mp3/requirements.txt
 
 # Modify /boot/fireware/config.txt (get sound working on Pirate-Audio)
 function add_to_config_text {
