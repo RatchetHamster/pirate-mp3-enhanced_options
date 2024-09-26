@@ -39,22 +39,27 @@ Some settings can be configured in mp3/__init__.py:
 ## Requirements
 
 Run this code on fresh install of Rasbian: 
-(need to run 'sudo apt install git' if lite version of Rasbian)
+(need to run 'sudo apt install git' & 'sudo apt-get install python3-pip' if lite version of Rasbian)
 ```
 git clone https://github.com/RatchetHamster/pirate-mp3-enhanced_options.git
 chmod +x /home/pi/pirate-mp3-enhanced_options/mp3/install.sh
-sudo apt-get install python3-pip
 sudo /home/pi/pirate-mp3-enhanced_options/mp3/install.sh
+```
+optionally to setup samba fileshare:
+```
+chmod +x /home/pi/pirate-mp3-enhanced_options/mp3/samba_setup.sh
+sudo nano /home/pi/pirate-mp3-enhanced_options/mp3/samba_setup.sh
+enter password for fileshare
+sudo /home/pi/pirate-mp3-enhanced_options/mp3/samba_setup.sh
 ```
 The install file does the following:
 1. Update upgrade
 2. Python virtual env setup, activate and install mp3/requirements.txt
 3. Modify /boot/firmware/config.txt file to get audio working
 4. Modify /etc/rc.local to start module on boot and log output to /tmp/rc.local.log
-(optionally):
-5. sudo nano /home/pi/pirate-mp3-enhanced_options/mp3/samba_setup.sh
-6. enter password for network share; crtl+x; y; enter
-7. /home/pi/pirate-MP3-enhanced_options/mp3/samba_setup.sh
+5. (optionally): install samba
+6. configure share file
+7. new share file user and password
 
 ## Adding Music
 
