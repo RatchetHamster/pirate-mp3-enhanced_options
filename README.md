@@ -8,35 +8,44 @@ This fork adds a few enhancements to the UI to expand capability. Some of these 
 
 Case for pirate-audio with speaker and rpi zero 2 w and some funky buttons: https://www.thingiverse.com/thing:6776425
 
-## Changes in this fork: 
-1. Added to resources: default_cover.png; icon-list.png; icon-time-onoff.png
-2. Album view: Sleep icon on button A
-3. Album view: list icon instead of return icon for button X
-4. Album view: gap between album art
-5. Album view: Button A - Sleep menu and display (short press); sleep/wake (long press)
-6. Album view: "pseduo shutdown" and "pseduo wake" (long press button A) - does not actually shutdown pi or even end program, just turns of screen and shuts it up. 
-7. Album view: Vol +/- (persistant long press buttons B & Y) and volume % indicator
-8. Album view: autoplay first track in album when switching (i.e. short press B & Y starts playing new album (book)
-9. Default Album art when none present in folder. 
-10. Track view: fix view track as the "current track" when entering track view
-11. Track view: (persistant long press buttons X & Y) moves in 5 track jumps
-12. Auto play on startup (i.e. first track of first album plays) - can be toggled by setting "is_playonstartup" to False in __init__.py
+Some settings can be configured in mp3/__init__.py:
+1. Sleep time options
+2. Default sleep time index
+3. long button press duration
+4. auto play on startup (True/False)
+5. Auto sync music file to a network folder on boot if available. 
+
+## Modifications to pirate-mp3 by RatchetHamster
+1. Added resources: default_cover.png; icon-list.png; icon-time-onoff.png
+2. Album view: Sleep Icon
+3. Album view: list icon instead of return
+4. Album view: gap between ablum art
+5. Album view: sleep menu (short press); on/off (long press) - top left button
+6. Album view: vol +/- persistant volume change and vol indicator
+7. Album view: auto play first track album when selected
+8. Album view: only draw +/-1 albums for screen (save on processing)
+9. Track view: fix view track as current track when go into
+10. Track view: persistant scroll (long press) moves in jumps of 2. 
+11. Track view: draw only +/- 2 tracks for screen (save on processing)
+12. Default Album art when no cover present
+13. Auto play on start up (option to turn on and off) by setting "is_playonstartup"
+14. Auto play next track and auto switch to next album at end of album
+15. Auto Sync to a networked folder (i.e. pull files from a persistant media source)
+16. Import Sorted alphabetically for album and track NAMES (not meta title)
+17. Pseduo shutdown/sleep; Pseduo wake with button 'A' long press
 
 ## Requirements
 
-TO BE COMPLETED STILL!!!!
-To Do: 
-1. write code to run in SSH, something like: git clone this repo; run install.sh - that should be all - don't know yet. 
-2. write requirements.txt file for virtual enviroment install (pillow must be 9.5.0 not later - pip install "Pillow=9.5.0")
-3. write install.sh to handle setup:
-4. install.sh needs to: 
-* add "dtoverlay=hifberry-dac" and "gpio=25=op,dh" to /boot/firmware/config.txt
-* set alsamix vol to max
-* add on boot stuff to rc.local - not yet figured out!
-
-```
-python3 -m pip install eyed3
-```
+Run this code on fresh install of Rasbian: 
+'''
+git clone https://github.com/RatchetHamster/pirate-mp3-enhanced_options.git
+/home/pi/pirate-mp3/mp3/install.sh
+'''
+The install file does the following:
+1. Update upgrade
+2. Python virtual env setup, activate and install mp3/requirements.txt
+3. Modify /boot/firmware/config.txt file to get audio working
+4. Modify /etc/rc.local to start module on boot and log output to /tmp/rc.local.log
 
 ## Adding Music
 
