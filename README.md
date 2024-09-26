@@ -39,10 +39,11 @@ Some settings can be configured in mp3/__init__.py:
 ## Requirements
 
 Run this code on fresh install of Rasbian: 
-'''
+(need to run 'sudo apt install git' if lite version of Rasbian)
+```
 git clone https://github.com/RatchetHamster/pirate-mp3-enhanced_options.git
 /home/pi/pirate-mp3/mp3/install.sh
-'''
+```
 The install file does the following:
 1. Update upgrade
 2. Python virtual env setup, activate and install mp3/requirements.txt
