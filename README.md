@@ -46,6 +46,10 @@ The install file does the following:
 2. Python virtual env setup, activate and install mp3/requirements.txt
 3. Modify /boot/firmware/config.txt file to get audio working
 4. Modify /etc/rc.local to start module on boot and log output to /tmp/rc.local.log
+(optionally):
+5. sudo nano /home/pi/pirate-mp3/mp3/samba_setup.sh
+6. enter password for network share; crtl+x; y; enter
+7. /home/pi/pirate-MP3/mp3/samba_setup.sh
 
 ## Adding Music
 
