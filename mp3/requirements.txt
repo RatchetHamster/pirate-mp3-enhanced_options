@@ -1,0 +1,17 @@
+coverage==5.5
+deprecation==2.1.0
+eyed3==0.9.7
+filetype==1.2.0
+font-roboto==0.0.1
+fonts==0.0.3
+gpiod==2.2.1
+gpiodevice==0.0.5
+lgpio==0.2.2.0
+numpy==2.1.1
+packaging==24.1
+Pillow==9.5.0
+pygame==2.6.0
+rpi-lgpio==0.6
+spidev==3.6
+st7789==1.0.1
+toml==0.10.2
