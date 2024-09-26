@@ -42,7 +42,7 @@ Run this code on fresh install of Rasbian:
 (need to run 'sudo apt install git' if lite version of Rasbian)
 ```
 git clone https://github.com/RatchetHamster/pirate-mp3-enhanced_options.git
-/home/pi/pirate-mp3/mp3/install.sh
+/home/pi/pirate-mp3-enhanced_options/mp3/install.sh
 ```
 The install file does the following:
 1. Update upgrade
@@ -50,9 +50,9 @@ The install file does the following:
 3. Modify /boot/firmware/config.txt file to get audio working
 4. Modify /etc/rc.local to start module on boot and log output to /tmp/rc.local.log
 (optionally):
-5. sudo nano /home/pi/pirate-mp3/mp3/samba_setup.sh
+5. sudo nano /home/pi/pirate-mp3-enhanced_options/mp3/samba_setup.sh
 6. enter password for network share; crtl+x; y; enter
-7. /home/pi/pirate-MP3/mp3/samba_setup.sh
+7. /home/pi/pirate-MP3-enhanced_options/mp3/samba_setup.sh
 
 ## Adding Music
 
