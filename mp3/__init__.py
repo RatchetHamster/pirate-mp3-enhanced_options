@@ -170,6 +170,8 @@ class Track:
 
     @property
     def title(self):
+        if self.id3.tag==None or self.id3.tag.title == None: 
+            return os.path.basename(self.path)[:-4]
         return self.id3.tag.title
 
     def play(self):
