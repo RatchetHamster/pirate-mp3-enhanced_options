@@ -1,3 +1,15 @@
+Working on release 2 which includes: 
+*Refactor into frontend, core, backend, hardware for easier maintenance. 
+*Powersaving option for screen dim
+*Screen response upgrade
+*Better boot time and sync check time
+*Independant button functions on the frontend for easy modifications
+
+Left to do: 
+*Testing
+*Splash screen 
+*Pi sleep instead of pseduo shutdown???
+
 # Pirate MP3 - Tested Stable 1.0
 
 A quick and dirty MP3 player for Pirate Audio.
