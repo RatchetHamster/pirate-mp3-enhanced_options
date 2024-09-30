@@ -10,7 +10,7 @@ from mp3.hardware import Board
 
 #region ----- Network Sync Settings -----
 
-is_autosync = True  # setting this to true will make sure the local_rpi_dir is the same as source_dir on a network
+is_autosync = False  # setting this to true will make sure the local_rpi_dir is the same as source_dir on a network
 local_rpi_dir = ""
 source_dir = ""
 source_username = ""
@@ -30,6 +30,7 @@ icon_play = Image.open(RESOURCES / "icon-play.png").convert("RGBA")
 icon_stop = Image.open(RESOURCES / "icon-stop.png").convert("RGBA")
 icon_list = Image.open(RESOURCES / "icon-list.png").convert("RGBA")
 icon_sleep = Image.open(RESOURCES / "icon-time-onoff.png").convert("RGBA")
+splash = Image.open(RESOURCES / "splash.png").convert("RGBA")
 
 #endregion
 
@@ -101,40 +102,43 @@ class Frontend():
 
         #Configureable:
         self.sleep_times = [None, 1*60*60, 2*60*60, 3*60*60, 4*60*60] # (sec) times that appear in sleep menu
-        self.sleep_index = 2   #default index in the sleep times list - set to 0 to turn off by default
+        self.sleep_index = 3   #default index in the sleep times list - set to 0 to turn off by default
         self.is_playonstartup = True # Set to true to autoplay when turned on, false otherwise. 
         self.start_at_random_album = True #if true, pick random album
         self.num_track_skip_per_scroll = 2
         self.persist_inc_time = 0.3 #(sec)
+
         self.is_enable_powersave = True
         self.powersave_dur = 10 #(sec)
-        self.powersave_sleep_per_cycle = 0.9 #(sec)
-        self.normal_sleep_per_cycle = 0.01 #(sec)
-        
-        self.is_in_powersave_mode = False
-        self.sleep_per_cycle = self.normal_sleep_per_cycle
+        self.normal_sleep_percyc = 0.1
+        self.powersave_sleep_percyc = 1
+        self.is_powersave = False
+
         self.persist_i = {
             "A": 0,
             "B": 0, 
             "X": 0, 
             "Y": 0}
+        self.canvas = Image.new("RGB", (self.board.DISPLAY_W, self.board.DISPLAY_H), (0, 0, 0))
+        self.display_splash()
 
         # Autosync:
         if is_autosync:
             os.system(f'sudo mount {source_dir} /mnt/ -o username={source_username},password={source_password}') # Mount source - may require username and password
             os.system(f'rsync --recursive --ignore-existing --delete -P /mnt/ {local_rpi_dir}')
             os.system(f'sudo umount /mnt/')
-        self.canvas = Image.new("RGB", (self.board.DISPLAY_W, self.board.DISPLAY_H), (0, 0, 0))
         
         # Startup actions:
         self.library.setup(self.start_at_random_album)
         self.startup_play()
+        self.board.time_of_last_but_press = time.time()
         self.sleep_start_time = time.time()
 
     def startup_play(self):
         if self.is_playonstartup:
             self.library.play()
 
+    #region Button Calls:
     def buttonA_pressed(self):
         self.wake_from_idle()
 
@@ -213,33 +217,9 @@ class Frontend():
         elif self.library.view == "track":
             self.library.current_album.prev()
         self.persist_i["X"]=0
+    #endregion
 
-    def draw_blank(self):
-        self.draw = ImageDraw.Draw(self.canvas)
-        self.draw.rectangle((0, 0, self.board.DISPLAY_W, self.board.DISPLAY_H), (0, 0, 0))
-
-    def update_frame(self):
-        self.draw_blank()
-        view = self.library.view
-
-        # Persistant Function call:
-        for label in self.board.LABELS:
-            if self.board.but_press_time[label]!=None:
-                tot_press_dur = time.time()-self.board.but_press_time[label]
-                time_since_last_persist_inc = tot_press_dur - self.board.long_press_dur - self.persist_inc_time * (self.persist_i[label])
-                if time_since_last_persist_inc>0: 
-                    self.persist_i[label]+=1
-                    self.board.held_functions[label]()
-
-        if view == "album":
-            self.album_view_create()
-
-        elif view == "track":
-            self.track_view_create()
-
-        self.board.display.display(self.canvas)
-        time.sleep(self.sleep_per_cycle)
-        
+    #region Sleep and Idle Checks:
     def get_sleep_time_left(self):
         if self.sleep_times[self.sleep_index] != None:
             return self.sleep_times[self.sleep_index] - (time.time() - self.sleep_start_time)
@@ -250,17 +230,47 @@ class Frontend():
             if self.sleep_times[self.sleep_index] != None:
                 if self.get_sleep_time_left() < 0:
                     self.board.pseduo_shutdown()
-            if time.time() - self.board.time_of_last_but_press > self.powersave_dur:
+        if self.is_enable_powersave and not self.board.is_shutdown:
+            if (time.time() - self.board.time_of_last_but_press) > self.powersave_dur:
                 self.board.screen_dim()
-                self.is_in_powersave_mode = True
-                self.sleep_per_cycle = self.powersave_sleep_per_cycle
-    
-    def wake_from_idle(self):
-        if self.is_in_powersave_mode:
-            self.is_in_powersave_mode = False
-            self.board.screen_on()
-            self.sleep_per_cycle = self.normal_sleep_per_cycle
+                self.is_powersave = True
 
+    def wake_from_idle(self):
+        if self.is_powersave:
+            self.is_powersave = False
+            self.board.screen_on()
+    #endregion
+
+    #region Drawing
+    def update_frame(self):
+        if not self.board.is_shutdown:
+            view = self.library.view
+
+            # Persistant Function call:
+            for label in self.board.LABELS:
+                if self.board.but_press_time[label]!=None:
+                    tot_press_dur = time.time()-self.board.but_press_time[label]
+                    time_since_last_persist_inc = tot_press_dur - self.board.long_press_dur - self.persist_inc_time * (self.persist_i[label])
+                    if time_since_last_persist_inc>0: 
+                        self.persist_i[label]+=1
+                        self.board.held_functions[label]()
+            
+            self.draw = ImageDraw.Draw(self.canvas)
+            self.draw.rectangle((0, 0, self.board.DISPLAY_W, self.board.DISPLAY_H), (0, 0, 0))
+
+            if view == "album":
+                self.album_view_create()
+
+            elif view == "track":
+                self.track_view_create()
+
+            self.board.display.display(self.canvas)
+
+        if self.is_powersave or self.board.is_shutdown:
+            time.sleep(self.powersave_sleep_percyc)
+        else:
+            time.sleep(self.normal_sleep_percyc)
+    
     def album_view_create(self):
         DISPLAY_W = self.board.DISPLAY_W
         DISPLAY_H = self.board.DISPLAY_H
@@ -280,17 +290,7 @@ class Frontend():
 
         text_in_rect(self.draw, self.library.current_album.title, font, (26, DISPLAY_H - 60, DISPLAY_W - 26, DISPLAY_H), line_spacing=1.1, textcolor=(255, 255, 255))
 
-        icon(self.canvas, icon_backdrop, (0, 47), (255, 255, 255))
-        icon(self.canvas, icon_sleep, (0, 50), (0, 0, 0))
-        
-        icon(self.canvas, icon_backdrop.rotate(180), (DISPLAY_W - 26, 47), (255, 255, 255))
-        icon(self.canvas, icon_list.rotate(0), (DISPLAY_W - 20, 50), (0, 0, 0))
-
-        icon(self.canvas, icon_backdrop, (0, DISPLAY_H - 73), (255, 255, 255))
-        icon(self.canvas, icon_rightarrow.rotate(180), (0, DISPLAY_H - 70), (0, 0, 0))
-
-        icon(self.canvas, icon_backdrop.rotate(180), (DISPLAY_W - 26, DISPLAY_H - 73), (255, 255, 255))
-        icon(self.canvas, icon_rightarrow, (DISPLAY_W - 20, DISPLAY_H - 70), (0, 0, 0))
+        self.draw_icons(icon_sleep, icon_rightarrow.rotate(180), icon_list, icon_rightarrow)
 
         # Sleep time:   
         if self.get_sleep_time_left() != None:
@@ -343,20 +343,24 @@ class Frontend():
 
         text_in_rect(self.draw, album.title, font, (0, 0, DISPLAY_W, 30), line_spacing=1.1, textcolor=(255, 255, 255))
 
-        icon(self.canvas, icon_backdrop, (0, 47), (255, 255, 255))
-        icon(self.canvas, icon_return, (0, 53), (0, 0, 0))
-
-        icon(self.canvas, icon_backdrop.rotate(180), (DISPLAY_W - 26, 47), (255, 255, 255))
-        icon(self.canvas, icon_rightarrow.rotate(90), (DISPLAY_W - 20, 50), (0, 0, 0))
-
-        icon(self.canvas, icon_backdrop.rotate(180), (DISPLAY_W - 26, DISPLAY_H - 73), (255, 255, 255))
-        icon(self.canvas, icon_rightarrow.rotate(-90), (DISPLAY_W - 20, DISPLAY_H - 70), (0, 0, 0))
-
-        # Play/Pause
-        icon(self.canvas, icon_backdrop, (0, DISPLAY_H - 73), (255, 255, 255))
+        icon_playpause = icon_play
         if self.library.is_busy() and album.current_track == album.current_playing_track:
-            icon(self.canvas, icon_stop, (0, DISPLAY_H - 70), (0, 0, 0))
-        else:
-            icon(self.canvas, icon_play, (0, DISPLAY_H - 70), (0, 0, 0))
+            icon_playpause = icon_stop
+        self.draw_icons(icon_return, icon_playpause, icon_rightarrow.rotate(90), icon_rightarrow.rotate(-90))
+            
+    def draw_icons(self, iconA, iconB, iconX, iconY):
+        #Backdrops:
+        icon(self.canvas, icon_backdrop, (0, 47), (255, 255, 255))
+        icon(self.canvas, icon_backdrop.rotate(180), (self.board.DISPLAY_W - 26, 47), (255, 255, 255))
+        icon(self.canvas, icon_backdrop, (0, self.board.DISPLAY_H - 73), (255, 255, 255))
+        icon(self.canvas, icon_backdrop.rotate(180), (self.board.DISPLAY_W - 26, self.board.DISPLAY_H - 73), (255, 255, 255))
+        #Icons:
+        icon(self.canvas, iconA, (0, 50), (0, 0, 0))
+        icon(self.canvas, iconB, (0, self.board.DISPLAY_H - 70), (0, 0, 0))
+        icon(self.canvas, iconX.rotate(0), (self.board.DISPLAY_W - 20, 50), (0, 0, 0))
+        icon(self.canvas, iconY, (self.board.DISPLAY_W - 20, self.board.DISPLAY_H - 70), (0, 0, 0))
 
+    def display_splash(self):
+        self.canvas.paste(splash, (0, 0), None)
+        self.board.display.display(self.canvas)
 #endregion
