@@ -111,6 +111,7 @@ class Board(Screen, Buttons):
             "X": None, 
             "Y": None}
         self.frontend.library.stop()
+        self.frontend.display_splash()
         self.screen_off()
         self.is_shutdown = True
 
