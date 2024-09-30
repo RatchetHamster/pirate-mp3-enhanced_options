@@ -4,11 +4,7 @@ Working on release 2 which includes:
 - Screen response upgrade
 - Better boot time and sync check time
 - Independant button functions on the frontend for easy modifications
-
-Left to do: 
-- Testing (auto next album may make screen blank and buttons unresponsive)
-- Splash screen 
-- Pi sleep instead of pseduo shutdown???
+- Splash Screen
 
 # Pirate MP3 - Tested Stable 1.0
 
