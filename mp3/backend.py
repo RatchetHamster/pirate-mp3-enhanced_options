@@ -111,7 +111,7 @@ class Library:
             self.albums.append(Album(file, cover_art_path))
         
         if pick_random_album:
-            self.current_index = randint(0,len(self.albums))
+            self.current_index = randint(0,len(self.albums)-1)
 
     @property
     def current_album(self):
@@ -144,10 +144,10 @@ class Library:
 
     def auto_next(self, auto_track_next=True, auto_album_next=True):
         if auto_track_next:
-            if self.albums[self.current_index].playing_index!= None and not Core().is_busy(): #auto play next track
+            if self.albums[self.current_index].playing_index != None and not Core().is_busy(): #auto play next track
                 if self.albums[self.current_index].playing_index==len(self.albums[self.current_index].tracks)-1: #if end of album
                     if auto_album_next:
-                        self.view="ablum"
+                        self.view="album"
                         self.next()
                     else:
                         self.albums[self.current_index].next()
