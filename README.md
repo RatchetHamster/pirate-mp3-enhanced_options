@@ -1,4 +1,4 @@
-Working on release 2 which includes: 
+# Pirate MP3 - Rev. 2 updates
 - Refactor into frontend, core, backend, hardware for easier maintenance. 
 - Powersaving option for screen dim
 - Screen response upgrade
