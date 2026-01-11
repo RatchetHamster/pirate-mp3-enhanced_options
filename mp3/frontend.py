@@ -124,9 +124,12 @@ class Frontend():
 
         # Autosync:
         if is_autosync:
-            os.system(f'sudo mount {source_dir} /mnt/ -o username={source_username},password={source_password}') # Mount source - may require username and password
-            os.system(f'rsync --recursive --ignore-existing --delete -P /mnt/ {local_rpi_dir}')
-            os.system(f'sudo umount /mnt/')
+            try:
+                os.system(f'sudo mount {source_dir} /mnt/ -o username={source_username},password={source_password}') # Mount source - may require username and password
+                os.system(f'rsync --recursive --ignore-existing --delete -P /mnt/ {local_rpi_dir}')
+                os.system(f'sudo umount /mnt/')
+            except:
+                print("Syncing to network turned on, but something went wrong")
         
         # Startup actions:
         self.library.setup(self.start_at_random_album)
@@ -364,3 +367,4 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
