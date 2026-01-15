@@ -1,0 +1,11 @@
+[Unit]
+Description=Pirate Audio service
+After=multi-user.target
+
+[Service]
+ExecStart=/bin/sh -c '/home/pi/venv/bin/python /home/pi/pirate-mp3-enhanced_options/__init__.py >> /var/log/pirate-mp3.log 2>&1'
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
