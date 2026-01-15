@@ -8,37 +8,9 @@
 
 A quick and dirty MP3 player for Pirate Audio.
 
-You must place your music in the "music" folder and run this package with `python3 -m mp3`.
-
-This fork adds a few enhancements to the UI to expand capability. Some of these enhancements come from audiobook player application (I just wanted a dumb mp3 player that can go in my kids room that they can select books (albums) and chapters (tracks)). 
+You must place your music in the "music" folder.
 
 Case for pirate-audio with speaker and rpi zero 2 w and some funky buttons: https://www.thingiverse.com/thing:6776425
-
-Some settings can be configured in mp3/__init__.py:
-1. Sleep time options
-2. Default sleep time index
-3. long button press duration
-4. auto play on startup (True/False)
-5. Auto sync music file to a network folder on boot if available. 
-
-## Modifications to pirate-mp3 by RatchetHamster
-1. Added resources: default_cover.png; icon-list.png; icon-time-onoff.png
-2. Album view: Sleep Icon
-3. Album view: list icon instead of return
-4. Album view: gap between ablum art
-5. Album view: sleep menu (short press); on/off (long press) - top left button
-6. Album view: vol +/- persistant volume change and vol indicator
-7. Album view: auto play first track album when selected
-8. Album view: only draw +/-1 albums for screen (save on processing)
-9. Track view: fix view track as current track when go into
-10. Track view: persistant scroll (long press) moves in jumps of 2. 
-11. Track view: draw only +/- 2 tracks for screen (save on processing)
-12. Default Album art when no cover present
-13. Auto play on start up (option to turn on and off) by setting "is_playonstartup"
-14. Auto play next track and auto switch to next album at end of album
-15. Auto Sync to a networked folder (i.e. pull files from a persistant media source)
-16. Import Sorted alphabetically for album and track NAMES (not meta title)
-17. Pseduo shutdown/sleep; Pseduo wake with button 'A' long press
 
 ## To Install
 SSH into fresh install  
@@ -80,6 +52,8 @@ usermod -a -G spi,i2c,gpio,video,audio pi
 python -m venv /home/pi/venv/
 source /home/pi/venv/bin/activate
 pip install -r /home/pi/python/pirate-mp3-enhanced_options/mp3/requirements.txt
+sudo apt update
+sudo apt install python3.13-dev
 git clone https://github.com/pimoroni/st7789-python
 cd st7789-python
 ./install.sh
