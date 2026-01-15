@@ -6,6 +6,9 @@ from fonts.ttf import RobotoMedium as UserFont
 from datetime import timedelta
 from backend import RESOURCES
 from hardware import Board
+import logging
+#Logger:
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s') #Change level of logging output here
 
 #region ----- Fonts and Resources -----
 
@@ -85,11 +88,11 @@ def text_in_rect(draw, text, font, rect, line_spacing=1.1, textcolor=(0, 0, 0)):
 
 class Frontend():
     def __init__(self, library):
-        self.debug("Frontend init started...")
+        logging.debug("Frontend init started...")
         self.library = library
-        self.debug("Library initalised")
+        logging.debug("Library initalised")
         self.board = Board(self)
-        self.debug("Board initalised")
+        logging.debug("Board initalised")
 
         #Configureable:
         self.sleep_times = [None, 1*60*60, 2*60*60, 3*60*60, 4*60*60] # (sec) times that appear in sleep menu
@@ -119,7 +122,7 @@ class Frontend():
         self.startup_play()
         self.time_of_last_but_press = time.time()
         self.sleep_start_time = time.time()
-        self.debug("Frontend init complete.")
+        logging.debug("Frontend init complete.")
 
     def startup_play(self):
         if self.is_playonstartup:
@@ -343,6 +346,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
