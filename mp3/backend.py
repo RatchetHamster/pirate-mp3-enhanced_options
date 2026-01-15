@@ -8,7 +8,7 @@ from pathlib import Path
 from core import Core
 import logging
 #Logger:
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s') #Change level of logging output here
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s') #Change level of logging output here
 
 RESOURCES = pathlib.Path(__file__).resolve().parent / "resources"
 
@@ -156,6 +156,7 @@ class Library:
                 else:
                     self.albums[self.current_index].next()
                 self.play()
+
 
 
 
