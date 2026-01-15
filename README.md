@@ -57,6 +57,7 @@ sudo apt install python3.13-dev
 git clone https://github.com/pimoroni/st7789-python
 cd st7789-python
 ./install.sh
+pip install rpi-gpio
 
 # Service
 Move .service file to correct location  
