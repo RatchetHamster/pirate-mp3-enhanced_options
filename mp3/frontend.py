@@ -4,8 +4,8 @@ import time
 from PIL import Image, ImageFont, ImageDraw
 from fonts.ttf import RobotoMedium as UserFont
 from datetime import timedelta
-from mp3.backend import RESOURCES
-from mp3.hardware import Board
+from backend import RESOURCES
+from hardware import Board
 
 
 #region ----- Network Sync Settings -----
@@ -367,4 +367,5 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
