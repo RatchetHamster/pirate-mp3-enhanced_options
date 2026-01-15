@@ -6,8 +6,6 @@
 - Independant button functions on the frontend for easy modifications
 - Splash Screen
 
-# Pirate MP3 - Tested Stable 1.0
-
 A quick and dirty MP3 player for Pirate Audio.
 
 You must place your music in the "music" folder and run this package with `python3 -m mp3`.
@@ -42,29 +40,71 @@ Some settings can be configured in mp3/__init__.py:
 16. Import Sorted alphabetically for album and track NAMES (not meta title)
 17. Pseduo shutdown/sleep; Pseduo wake with button 'A' long press
 
-## Requirements
+## To Install
+SSH into fresh install  
+sudo apt update
+sudo apt upgrade -y
+sudo apt install git -y  
+git clone this repo  
 
-Run this code on fresh install of Rasbian (Rasbian Lite will require 'sudo apt-get install git' first): 
-```
-git clone https://github.com/RatchetHamster/pirate-mp3-enhanced_options.git
-chmod +x /home/pi/pirate-mp3-enhanced_options/mp3/install.sh
-sudo /home/pi/pirate-mp3-enhanced_options/mp3/install.sh
-```
-optionally to setup samba fileshare:
-```
-chmod +x /home/pi/pirate-mp3-enhanced_options/mp3/samba_setup.sh
-sudo nano /home/pi/pirate-mp3-enhanced_options/mp3/samba_setup.sh
-enter password for fileshare
-sudo /home/pi/pirate-mp3-enhanced_options/mp3/samba_setup.sh
-```
-The install file does the following:
-1. Update upgrade
-2. Python virtual env setup, activate and install mp3/requirements.txt
-3. Modify /boot/firmware/config.txt file to get audio working
-4. Modify /etc/rc.local to start module on boot and log output to /tmp/rc.local.log
-5. (optionally): install samba
-6. configure share file
-7. new share file user and password
+# Samba: 
+sudo apt update && sudo apt upgrade -y && sudo apt install samba samba-common-bin -y  
+sudo nano /etc/samba/smb.conf  
+Add to the end of the file for each share:  
+
+[pirateMP3]  
+path = /home/pi/pirate-mp3-enhanced_options/music  
+writeable = yes  
+browseable = yes  
+public=no  
+
+Setup samba password and user:  
+sudo smbpasswd -a pi  
+enter password  
+setup network folder on windows machine  
+
+# Config
+Modify /boot/fireware/config.txt (get sound working on Pirate-Audio)  
+sudo nano /boot/firmware/config.txt  
+add to line 5:  
+dtoverlay=hifiberry-dac
+gpio=25=op,dh
+
+sudo raspi-confi
+enable i2c and spi
+
+# User Groups:  
+usermod -a -G spi,i2c,gpio,video,audio pi  
+
+# SETUP PYTHON VENV
+python -m venv /home/pi/venv/
+source /home/pi/venv/bin/activate
+pip install -r /home/pi/python/pirate-mp3-enhanced_options/mp3/requirements.txt
+git clone https://github.com/pimoroni/st7789-python
+cd st7789-python
+./install.sh
+
+# Service
+Move .service file to correct location  
+sudo mv /home/pi/pirate-mp3-enhanced_options/mp3/pirate-mp3.service /etc/systemd/system/
+
+#Enable service at boot
+sudo systemctl daemon-reload && sudo systemctl enable pirate-mp3 && sudo systemctl start pirate-mp3
+
+#Create logrotate limit on log file
+sudo nano /etc/logrotate.d/pirate-mp3
+into the file put:
+/var/log/pirate-mp3.log
+{
+weekly
+minsize 1M
+maxsize 10M
+rotate 4
+missingok
+notifempty
+}
+
+-------------------
 
 ## Adding Music
 
@@ -96,10 +136,3 @@ music/
 │   ├── Sabrepulse - First Crush - 07 Futureproof.mp3
 │   └── Sabrepulse - First Crush - 08 We Were Young.mp3
 ```
-
-## Samba network folder
-
-This player becomes very powerful if you have wifi setup and create a networked folder on the /home/pi/pirate-mp3/music folder so that you can add/remove music from a windows device. I use this tutorial:
-https://pimylifeup.com/raspberry-pi-samba/
-
-Although, where it asks you to create a new folder - you just use the one that is already there. 
