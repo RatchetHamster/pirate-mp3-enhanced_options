@@ -7,18 +7,6 @@ from datetime import timedelta
 from backend import RESOURCES
 from hardware import Board
 
-
-#region ----- Network Sync Settings -----
-
-is_autosync = False  # setting this to true will make sure the local_rpi_dir is the same as source_dir on a network
-local_rpi_dir = ""
-source_dir = ""
-source_username = ""
-source_password = ""
-
-#endregion -------------------
-
-
 #region ----- Fonts and Resources -----
 
 font = ImageFont.truetype(UserFont, 16)
@@ -97,8 +85,11 @@ def text_in_rect(draw, text, font, rect, line_spacing=1.1, textcolor=(0, 0, 0)):
 
 class Frontend():
     def __init__(self, library):
+        self.debug("Frontend init started...")
         self.library = library
+        self.debug("Library initalised")
         self.board = Board(self)
+        self.debug("Board initalised")
 
         #Configureable:
         self.sleep_times = [None, 1*60*60, 2*60*60, 3*60*60, 4*60*60] # (sec) times that appear in sleep menu
@@ -121,21 +112,14 @@ class Frontend():
             "Y": 0}
         self.canvas = Image.new("RGB", (self.board.DISPLAY_W, self.board.DISPLAY_H), (0, 0, 0))
         self.display_splash()
-
-        # Autosync:
-        if is_autosync:
-            try:
-                os.system(f'sudo mount {source_dir} /mnt/ -o username={source_username},password={source_password}') # Mount source - may require username and password
-                os.system(f'rsync --recursive --ignore-existing --delete -P /mnt/ {local_rpi_dir}')
-                os.system(f'sudo umount /mnt/')
-            except:
-                print("Syncing to network turned on, but something went wrong")
         
         # Startup actions:
+        self.debug("Library setup called...")
         self.library.setup(self.start_at_random_album)
         self.startup_play()
-        self.board.time_of_last_but_press = time.time()
+        self.time_of_last_but_press = time.time()
         self.sleep_start_time = time.time()
+        self.debug("Frontend init complete.")
 
     def startup_play(self):
         if self.is_playonstartup:
@@ -234,11 +218,12 @@ class Frontend():
                 if self.get_sleep_time_left() < 0:
                     self.board.pseduo_shutdown()
         if self.is_enable_powersave and not self.board.is_shutdown:
-            if (time.time() - self.board.time_of_last_but_press) > self.powersave_dur:
+            if (time.time() - self.time_of_last_but_press) > self.powersave_dur:
                 self.board.screen_dim()
                 self.is_powersave = True
 
     def wake_from_idle(self):
+        self.time_of_last_but_press = time.time()
         if self.is_powersave:
             self.is_powersave = False
             self.board.screen_on()
@@ -248,15 +233,6 @@ class Frontend():
     def update_frame(self):
         if not self.board.is_shutdown:
             view = self.library.view
-
-            # Persistant Function call:
-            for label in self.board.LABELS:
-                if self.board.but_press_time[label]!=None:
-                    tot_press_dur = time.time()-self.board.but_press_time[label]
-                    time_since_last_persist_inc = tot_press_dur - self.board.long_press_dur - self.persist_inc_time * (self.persist_i[label])
-                    if time_since_last_persist_inc>0: 
-                        self.persist_i[label]+=1
-                        self.board.held_functions[label]()
             
             self.draw = ImageDraw.Draw(self.canvas)
             self.draw.rectangle((0, 0, self.board.DISPLAY_W, self.board.DISPLAY_H), (0, 0, 0))
@@ -367,5 +343,6 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
