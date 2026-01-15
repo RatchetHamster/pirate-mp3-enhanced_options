@@ -1,6 +1,6 @@
-from mp3.backend import Library
-from mp3.frontend import Frontend
-from mp3.core import Core
+from backend import Library
+from frontend import Frontend
+from core import Core
 
 #region Main
 
