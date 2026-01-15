@@ -6,9 +6,11 @@ from random import randint
 from hardware import DISPLAY_W, DISPLAY_H
 from pathlib import Path
 from core import Core
+import logging
+#Logger:
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s') #Change level of logging output here
 
 RESOURCES = pathlib.Path(__file__).resolve().parent / "resources"
-
 
 class Track:
     """Properties:
@@ -19,7 +21,7 @@ class Track:
 
     def __init__(self, path):
         self.path = path
-        print(f'Loading: {path}')
+        logging.info(f'Loading: {path}')
         self.id3 = eyed3.load(path)
 
     @property
@@ -32,6 +34,7 @@ class Track:
     def play(self):
         Core().load(str(self.path))
         Core().play()
+        logging.debug("Playing track")
 
 
 class Album:
@@ -153,5 +156,6 @@ class Library:
                 else:
                     self.albums[self.current_index].next()
                 self.play()
+
 
 
