@@ -1,6 +1,9 @@
 import time
-import RPi.GPIO as GPIO
+from gpiozero import PMWLED Button
 from ST7789 import ST7789
+import logging
+#Logger:
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s') #Change level of logging output here
 
 DISPLAY_W = 240
 DISPLAY_H = 240
@@ -21,9 +24,7 @@ class Screen():
         self.DISPLAY_H = DISPLAY_H
 
         # Backlight:
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(13, GPIO.OUT)
-        self.backlight = GPIO.PWM(13, 500)
+        self.backlight = PWMLED(13, frequency=500)
         self.screen_on()
 
     def screen_on(self):
@@ -37,21 +38,18 @@ class Screen():
 
 class Buttons():
     def __init__(self, frontend):
-        self.BUTTONS = [5, 6, 16, 24]
+        self.PINS = [5, 6, 16, 24]
         self.LABELS = ['A', 'B', 'X', 'Y']
-        self.long_press_dur = 1 #(sec)
-        self.but_press_time={
-            "A": None,
-            "B": None, 
-            "X": None, 
-            "Y": None}
-        self.time_of_last_but_press = time.time()
-
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.BUTTONS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        self.BUTTONS=[]
         
-        for pin in self.BUTTONS:
-            GPIO.add_event_detect(pin, GPIO.BOTH, self.handle_buttons, bouncetime=50)
+        for pin, label in zip(self.PINS, self.LABELS):
+            self.BUTTON.append(Button(23, pull_up=True, hold_time=2, hold_repeat=True))
+            self.BUTTON[-1].when_pressed = press_handle
+            self.BUTTON[-1].when_held = held_handle
+            self.BUTTON[-1].when_released = release_handle
+            self.BUTTON[-1].label = label
+            self.BUTTON[-1].was_held = False
+            
         
         # Button call functions:
         self.press_functions={
@@ -69,27 +67,33 @@ class Buttons():
             "B": frontend.buttonB_released,
             "X": frontend.buttonX_released,
             "Y": frontend.buttonY_released}
-        
-    def handle_buttons(self, pin):
-        label = self.LABELS[self.BUTTONS.index(pin)]
-        
-        
-        # Disable buttons but exceptions on shutdown:
-        if self.is_shutdown and label!="A":
-            return
 
-        # Button Press:
-        self.time_of_last_but_press = time.time()
-        if self.but_press_time[label]==None:
-            self.press_functions[label]()
-            self.but_press_time[label] = time.time()
+    def press_handle(self, btn):
+        logging.debug(f'Button {btn.label} was pressed')
+        if self.is_shutdown and btn.label!="A":
             return
-        
-        # Button Released:
-        press_duration = time.time()-self.but_press_time[label]
-        self.but_press_time[label] = None
-        self.release_functions[label](press_duration)
+        logging.debug(f'Button {btn.label} was pressed and triggered')
+        self.press_functions[btn.label]()
 
+    def held_handle(self, btn):
+        logging.debug(f'Button {btn.label} was held')
+        if self.is_shutdown and btn.label!="A":
+            return
+        logging.debug(f'Button {btn.label} was held and triggered')
+        btn.was_held = True
+        self.held_functions[btn.label]()
+
+    def release_handle(self, btn):
+        logging.debug(f'Button {btn.label} was released')
+        if self.is_shutdown and btn.label!="A":
+            return
+        if btn.was_held: 
+            logging.debug(f'Button {btn.label} was release, but was held so no trigger')
+            btn.was_held = False
+            return
+        logging.debug(f'Button {btn.label} was release and triggered')
+        self.held_functions[btn.label]()
+    
 
 class Board(Screen, Buttons):
     def __init__(self, frontend):
@@ -105,11 +109,6 @@ class Board(Screen, Buttons):
         # the screen off and stop all playing audio. 
         # This also allows for a "wake" to be implimented - but the program
         # and pi are still running. 
-        self.but_press_time={
-            "A": None,
-            "B": None, 
-            "X": None, 
-            "Y": None}
         self.frontend.library.stop()
         self.frontend.display_splash()
         self.screen_off()
@@ -121,3 +120,4 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
