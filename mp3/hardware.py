@@ -24,7 +24,7 @@ class Screen():
         self.DISPLAY_H = DISPLAY_H
 
         # Backlight:
-        self.backlight = PWMLED("GPIO13", frequency=500)
+        self.backlight = PWMLED("BCM13", frequency=500)
         self.screen_on()
 
     def screen_on(self):
@@ -120,6 +120,7 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
 
 
 
