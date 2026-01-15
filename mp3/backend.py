@@ -3,10 +3,9 @@ import eyed3
 import pathlib
 from PIL import Image
 from random import randint
-from mp3.hardware import DISPLAY_W, DISPLAY_H
+from hardware import DISPLAY_W, DISPLAY_H
 from pathlib import Path
-from mp3.core import Core
-
+from core import Core
 
 RESOURCES = pathlib.Path(__file__).resolve().parent / "resources"
 
@@ -154,4 +153,5 @@ class Library:
                 else:
                     self.albums[self.current_index].next()
                 self.play()
+
 
