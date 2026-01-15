@@ -1,8 +1,10 @@
+colorzero==2.0
 deprecation==2.1.0
 eyeD3==0.9.9
 filetype==1.2.0
 fonts==0.0.3
+gpiozero==2.0.1
 packaging==25.0
 pillow==12.1.0
 pygame==2.6.1
-
+setuptools==80.9.0
