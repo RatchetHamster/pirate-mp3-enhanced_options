@@ -21,7 +21,7 @@ class Track:
 
     def __init__(self, path):
         self.path = path
-        logging.info(f'Loading: {path}')
+        logging.debug(f'Loading: {path}')
         self.id3 = eyed3.load(path)
 
     @property
@@ -156,6 +156,7 @@ class Library:
                 else:
                     self.albums[self.current_index].next()
                 self.play()
+
 
 
 
