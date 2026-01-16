@@ -125,18 +125,22 @@ class Frontend():
 
     #region Button Calls:
     def buttonA_pressed(self):
+        print("press")
         logging.info("Button press called")
         self.wake_from_idle()
 
     def buttonB_pressed(self):
+        print("press")
         logging.info("Button press called")
         self.wake_from_idle()
 
     def buttonX_pressed(self):
+        print("press")
         logging.info("Button press called")
         self.wake_from_idle()
 
     def buttonY_pressed(self):
+        print("press")
         logging.info("Button press called")
         self.wake_from_idle()
 
@@ -354,6 +358,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
