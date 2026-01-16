@@ -12,6 +12,11 @@ You must place your music in the "music" folder.
 
 Case for pirate-audio with speaker and rpi zero 2 w and some funky buttons: https://www.thingiverse.com/thing:6776425
 
+## To upgrate from git  
+cd /home/pi/pirate-mp3-ehnaced_options
+git pull
+sudo reboot
+
 ## To Install
 SSH into fresh install  
 sudo apt update
