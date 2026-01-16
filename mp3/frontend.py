@@ -125,34 +125,38 @@ class Frontend():
 
     #region Button Calls:
     def buttonA_pressed(self):
-        self.info("Button press called")
+        logging.info("Button press called")
         self.wake_from_idle()
 
     def buttonB_pressed(self):
-        self.info("Button press called")
+        loggin.info("Button press called")
         self.wake_from_idle()
 
     def buttonX_pressed(self):
-        self.info("Button press called")
+        logging.info("Button press called")
         self.wake_from_idle()
 
     def buttonY_pressed(self):
-        self.info("Button press called")
+        logging.info("Button press called")
         self.wake_from_idle()
 
     def buttonA_held(self):
+        logging.info("Button held called")
         pass
 
     def buttonB_held(self):
+        logging.info("Button held called")
         if self.library.view == "album":
             self.library.inc_vol(-0.05)
 
     def buttonX_held(self):
+        logging.info("Button held called")
         if self.library.view == "track":
             for _ in range(self.num_track_skip_per_scroll):
                 self.library.current_album.prev()
 
     def buttonY_held(self):
+        logging.info("Button held called")
         if self.library.view == "album":
             self.library.inc_vol(0.05)
         elif self.library.view == "track":
@@ -160,6 +164,7 @@ class Frontend():
                 self.library.current_album.next()
 
     def buttonA_released(self, press_duration):
+        logging.info("Button release called")
         if self.library.view == "album":
             if press_duration > self.board.long_press_dur: #Long Press
                 if self.board.is_shutdown: 
@@ -175,6 +180,7 @@ class Frontend():
         self.persist_i["A"]=0
 
     def buttonB_released(self, press_duration):
+        logging.info("Button release called")
         if self.library.view == "album":
             if press_duration < self.board.long_press_dur: # short press  
                 self.library.prev()
@@ -188,6 +194,7 @@ class Frontend():
         self.persist_i["B"]=0
 
     def buttonY_released(self, press_duration):
+        logging.info("Button release called")
         if self.library.view == "album":
             if press_duration < self.board.long_press_dur: #short press    
                 self.library.next()
@@ -197,6 +204,7 @@ class Frontend():
         self.persist_i["Y"]=0
 
     def buttonX_released(self, press_duration):
+        logging.info("Button release called")
         if self.library.view == "album":    
             self.library.view = "track"
             if self.library.current_album.playing_index!=None:
@@ -346,6 +354,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
