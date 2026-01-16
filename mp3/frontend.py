@@ -95,7 +95,7 @@ class Frontend():
         logging.debug("Board initalised")
 
         #Configureable:
-        self.sleep_times = [None, 1*60*60, 2*60*60, 5, 4*60*60] # (sec) times that appear in sleep menu
+        self.sleep_times = [None, 1*60*60, 2*60*60, 3*60*60, 4*60*60] # (sec) times that appear in sleep menu
         self.sleep_index = 3   #default index in the sleep times list - set to 0 to turn off by default
         self.is_playonstartup = True # Set to true to autoplay when turned on, false otherwise. 
         self.start_at_random_album = True #if true, pick random album
@@ -125,15 +125,19 @@ class Frontend():
 
     #region Button Calls:
     def buttonA_pressed(self):
+        self.info("Button press called")
         self.wake_from_idle()
 
     def buttonB_pressed(self):
+        self.info("Button press called")
         self.wake_from_idle()
 
     def buttonX_pressed(self):
+        self.info("Button press called")
         self.wake_from_idle()
 
     def buttonY_pressed(self):
+        self.info("Button press called")
         self.wake_from_idle()
 
     def buttonA_held(self):
@@ -342,6 +346,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
