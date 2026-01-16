@@ -71,31 +71,31 @@ class Buttons():
 
     def press_handle(self, btn):
         label = self.pin_lookup[btn.pin.number]
-        logging.debug(f'Button {label} was pressed')
+        logging.info(f'Button {label} was pressed')
         if self.is_shutdown and label!="A":
             return
-        logging.debug(f'Button {label} was pressed and triggered')
+        logging.info(f'Button {label} was pressed and triggered')
         self.press_functions[label]()
 
     def held_handle(self, btn):
         label = self.pin_lookup[btn.pin.number]
-        logging.debug(f'Button {label} was held')
+        logging.info(f'Button {label} was held')
         if self.is_shutdown and label!="A":
             return
-        logging.debug(f'Button {label} was held and triggered')
+        logging.info(f'Button {label} was held and triggered')
         btn.was_held = True
         self.held_functions[label]()
 
     def release_handle(self, btn):
         label = self.pin_lookup[btn.pin.number]
-        logging.debug(f'Button {label} was released')
+        logging.info(f'Button {label} was released')
         if self.is_shutdown and label!="A":
             return
         if self.was_held[label]: 
-            logging.debug(f'Button {label} was release, but was held so no trigger')
+            logging.info(f'Button {label} was release, but was held so no trigger')
             btn.was_held[label] = False
             return
-        logging.debug(f'Button {label} was release and triggered')
+        logging.info(f'Button {label} was release and triggered')
         self.held_functions[label]()
     
 
@@ -124,6 +124,7 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
 
 
 
