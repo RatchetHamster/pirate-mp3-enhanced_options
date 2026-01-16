@@ -151,7 +151,13 @@ class Frontend():
 
     def buttonX_held(self):
         print("Button held called")
-        if self.library.view == "track":
+        if self.library.view == "album":    
+            self.library.view = "track"
+            if self.library.current_album.playing_index!=None:
+                self.library.current_album.current_index=self.library.current_album.playing_index
+            else:
+                self.library.current_album.current_index=0
+        elif self.library.view == "track":
             for _ in range(self.num_track_skip_per_scroll):
                 self.library.current_album.prev()
 
@@ -340,6 +346,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
