@@ -117,7 +117,7 @@ class Frontend():
         self.display_splash()
         
         # Startup actions:
-        self.debug("Library setup called...")
+        logging.debug("Library setup called...")
         self.library.setup(self.start_at_random_album)
         self.startup_play()
         self.time_of_last_but_press = time.time()
@@ -346,6 +346,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
