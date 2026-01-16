@@ -117,23 +117,18 @@ class Frontend():
 
     #region Button Calls:
     def buttonA_pressed(self):
-        print("press")
         self.wake_from_idle()
 
     def buttonB_pressed(self):
-        print("press")
         self.wake_from_idle()
 
     def buttonX_pressed(self):
-        print("press")
         self.wake_from_idle()
 
     def buttonY_pressed(self):
-        print("press")
         self.wake_from_idle()
 
     def buttonA_held(self):
-        print("Button held called")
         if self.library.view == "album":
             if self.board.is_shutdown: 
                 self.board.pseduo_wake()
@@ -145,12 +140,10 @@ class Frontend():
             self.library.view = "album"
 
     def buttonB_held(self):
-        print("Button held called")
         if self.library.view == "album":
             self.library.inc_vol(-0.1)
 
     def buttonX_held(self):
-        print("Button held called")
         if self.library.view == "album":    
             self.library.view = "track"
             if self.library.current_album.playing_index!=None:
@@ -162,7 +155,6 @@ class Frontend():
                 self.library.current_album.prev()
 
     def buttonY_held(self):
-        print("Button held called")
         if self.library.view == "album":
             self.library.inc_vol(0.1)
         elif self.library.view == "track":
@@ -170,7 +162,6 @@ class Frontend():
                 self.library.current_album.next()
 
     def buttonA_released(self):
-        print("Button release called")
         if self.library.view == "album":
             self.sleep_index = (self.sleep_index+1)%len(self.sleep_times)
             self.sleep_start_time = time.time()
@@ -178,7 +169,6 @@ class Frontend():
             self.library.view = "album"
 
     def buttonB_released(self):
-        print("Button release called")
         if self.library.view == "album": 
             self.library.prev()
             self.library.play()
@@ -189,7 +179,6 @@ class Frontend():
                 self.library.play()
 
     def buttonY_released(self):
-        print("Button release called")
         if self.library.view == "album":  
             self.library.next()
             self.library.play()
@@ -197,7 +186,6 @@ class Frontend():
             self.library.current_album.next()
 
     def buttonX_released(self):
-        print("Button release called")
         if self.library.view == "album":    
             self.library.view = "track"
             if self.library.current_album.playing_index!=None:
@@ -346,6 +334,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
