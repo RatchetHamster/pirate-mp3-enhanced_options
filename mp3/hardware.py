@@ -28,13 +28,13 @@ class Screen():
         self.screen_on()
 
     def screen_on(self):
-        self.backlight.start(100) # start at 100%
+        self.backlight.value = 1.0 # start at 100%
 
     def screen_off(self):
-        self.backlight.start(0) # start at 0%
+        self.backlight.value = 0.0 # start at 0%
 
     def screen_dim(self):
-        self.backlight.start(20) # start at 20%
+        self.backlight.value = 0.2 # start at 20%
 
 class Buttons():
     def __init__(self, frontend):
@@ -120,6 +120,7 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
 
 
 
