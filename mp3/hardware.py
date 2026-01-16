@@ -96,7 +96,7 @@ class Buttons():
             self.was_held[label] = False
             return
         logging.info(f'Button {label} was release and triggered')
-        self.held_functions[label]()
+        self.release_functions[label]()
     
 
 class Board(Screen, Buttons):
@@ -124,6 +124,7 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
 
 
 
