@@ -40,6 +40,7 @@ class Buttons():
     def __init__(self, frontend):
         self.PINS = [5, 6, 16, 24]
         self.LABELS = ['A', 'B', 'X', 'Y']
+        self.BUTTONS = []
         self.was_held = {}
         self.pin_lookup = {}
         
@@ -120,6 +121,7 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
 
 
 
