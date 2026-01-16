@@ -49,39 +49,40 @@ enable i2c and spi
 usermod -a -G spi,i2c,gpio,video,audio pi  
 
 # SETUP PYTHON VENV
-python -m venv /home/pi/venv/
-source /home/pi/venv/bin/activate
-pip install -r /home/pi/python/pirate-mp3-enhanced_options/mp3/requirements.txt
-sudo apt update
-sudo apt install python3.13-dev
-git clone https://github.com/pimoroni/st7789-python
-cd st7789-python
-./install.sh
-pip install https://github.com/Gadgetoid/PY_LGPIO/releases/download/0.2.2.0/lgpio-0.2.2.0.tar.gz
+python -m venv /home/pi/venv/  
+source /home/pi/venv/bin/activate  
+pip install -r /home/pi/python/pirate-mp3-enhanced_options/mp3/requirements.txt  
+sudo apt update  
+sudo apt install python3.13-dev  
+git clone https://github.com/pimoroni/st7789-python  
+cd st7789-python  
+./install.sh  
+pip install https://github.com/Gadgetoid/PY_LGPIO/releases/download/0.2.2.0/lgpio-0.2.2.0.tar.gz  
+Requirements should install ok, there is some pain around st7789 libraries and the lgpio used as a pin library in gpiozero, hopefully this should work  
 
 # Service
 Move .service file to correct location  
-sudo mv /home/pi/pirate-mp3-enhanced_options/mp3/pirate-mp3.service /etc/systemd/system/
+sudo mv /home/pi/pirate-mp3-enhanced_options/mp3/pirate-mp3.service /etc/systemd/system/  
 
-#Enable service at boot
-sudo systemctl daemon-reload && sudo systemctl enable pirate-mp3 && sudo systemctl start pirate-mp3
+#Enable service at boot  
+sudo systemctl daemon-reload && sudo systemctl enable pirate-mp3 && sudo systemctl start pirate-mp3  
 
-#Create logrotate limit on log file
-sudo nano /etc/logrotate.d/pirate-mp3
-into the file put:
-/var/log/pirate-mp3.log
-{
-weekly
-minsize 1M
-maxsize 10M
-rotate 4
-missingok
-notifempty
-}
+#Create logrotate limit on log file  
+sudo nano /etc/logrotate.d/pirate-mp3  
+into the file put:  
+/var/log/pirate-mp3.log  
+{  
+weekly  
+minsize 1M  
+maxsize 10M  
+rotate 4  
+missingok  
+notifempty    
+}  
 
 -------------------
 
-## Adding Music
+## Adding Music  
 
 Music must be in mp3 format, arranged into subfolders and include a `cover.jpg` or `cover.png` album art file. If the folder does not include cover art, it will use the crappy default. 
 Suimilar can be done for audiobooks - each folder is the book with track chapters inside. cover.jpg adn cover.png still apply (it still sees them as albums). 
