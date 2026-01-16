@@ -83,7 +83,7 @@ class Buttons():
         if self.is_shutdown and label!="A":
             return
         logging.info(f'Button {label} was held and triggered')
-        btn.was_held = True
+        self.was_held[label] = True
         self.held_functions[label]()
 
     def release_handle(self, btn):
@@ -93,7 +93,7 @@ class Buttons():
             return
         if self.was_held[label]: 
             logging.info(f'Button {label} was release, but was held so no trigger')
-            btn.was_held[label] = False
+            self.was_held[label] = False
             return
         logging.info(f'Button {label} was release and triggered')
         self.held_functions[label]()
@@ -124,6 +124,7 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
 
 
 
