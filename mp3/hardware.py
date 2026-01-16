@@ -50,7 +50,7 @@ class Buttons():
             self.BUTTONS[-1].when_held = self.held_handle
             self.BUTTONS[-1].when_released = self.release_handle
             self.pin_lookup.update({pin: label})
-            self.was_held.update({label: false})
+            self.was_held.update({label: False})
         
         # Button call functions:
         self.press_functions={
@@ -121,6 +121,7 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
 
 
 
