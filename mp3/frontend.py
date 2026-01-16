@@ -8,7 +8,7 @@ from backend import RESOURCES
 from hardware import Board
 import logging
 #Logger:
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s') #Change level of logging output here
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s') #Change level of logging output here
 
 #region ----- Fonts and Resources -----
 
@@ -346,6 +346,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
