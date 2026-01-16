@@ -95,7 +95,7 @@ class Frontend():
         logging.debug("Board initalised")
 
         #Configureable:
-        self.sleep_times = [None, 1*60*60, 2*60*60, 3*60*60, 4*60*60] # (sec) times that appear in sleep menu
+        self.sleep_times = [None, 1*60*60, 2*60*60, 5, 4*60*60] # (sec) times that appear in sleep menu
         self.sleep_index = 3   #default index in the sleep times list - set to 0 to turn off by default
         self.is_playonstartup = True # Set to true to autoplay when turned on, false otherwise. 
         self.start_at_random_album = True #if true, pick random album
@@ -108,21 +108,16 @@ class Frontend():
         self.powersave_sleep_percyc = 1
         self.is_powersave = False
 
-        self.persist_i = {
-            "A": 0,
-            "B": 0, 
-            "X": 0, 
-            "Y": 0}
         self.canvas = Image.new("RGB", (self.board.DISPLAY_W, self.board.DISPLAY_H), (0, 0, 0))
         self.display_splash()
         
         # Startup actions:
-        logging.debug("Library setup called...")
+        logging.info("Library setup called...")
         self.library.setup(self.start_at_random_album)
         self.startup_play()
         self.time_of_last_but_press = time.time()
         self.sleep_start_time = time.time()
-        logging.debug("Frontend init complete.")
+        logging.info("Frontend init complete.")
 
     def startup_play(self):
         if self.is_playonstartup:
@@ -234,6 +229,7 @@ class Frontend():
 
     #region Drawing
     def update_frame(self):
+        self.check_sleep_idle()
         if not self.board.is_shutdown:
             view = self.library.view
             
@@ -346,6 +342,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
