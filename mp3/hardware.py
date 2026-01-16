@@ -40,16 +40,16 @@ class Buttons():
     def __init__(self, frontend):
         self.PINS = [5, 6, 16, 24]
         self.LABELS = ['A', 'B', 'X', 'Y']
-        self.BUTTONS=[]
+        self.was_held = {}
+        self.pin_lookup = {}
         
         for pin, label in zip(self.PINS, self.LABELS):
             self.BUTTONS.append(Button(pin, pull_up=True, hold_time=2, hold_repeat=True))
             self.BUTTONS[-1].when_pressed = self.press_handle
             self.BUTTONS[-1].when_held = self.held_handle
             self.BUTTONS[-1].when_released = self.release_handle
-            #self.BUTTONS[-1].label = label
-            self.BUTTONS[-1].was_held = False
-            
+            self.pin_lookup.update({pin: label})
+            self.was_held.update({label: false})
         
         # Button call functions:
         self.press_functions={
@@ -69,7 +69,7 @@ class Buttons():
             "Y": frontend.buttonY_released}
 
     def press_handle(self, btn):
-        logging.debug(f'Button {btn.label} was pressed')
+        logging.debug(f'Button {self.pin_lookup[btn.pin.number]} was pressed')
         if self.is_shutdown and btn.label!="A":
             return
         logging.debug(f'Button {btn.label} was pressed and triggered')
@@ -120,6 +120,7 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
 
 
 
