@@ -140,6 +140,7 @@ class Frontend():
                 self.sleep_start_time = time.time()
             else:
                 self.board.pseduo_shutdown()
+                
         elif self.library.view == "track":
             self.library.view = "album"
 
@@ -162,7 +163,7 @@ class Frontend():
             for _ in range(self.num_track_skip_per_scroll):
                 self.library.current_album.next()
 
-    def buttonA_released(self, press_duration):
+    def buttonA_released(self):
         print("Button release called")
         if self.library.view == "album":
             self.sleep_index = (self.sleep_index+1)%len(self.sleep_times)
@@ -170,26 +171,26 @@ class Frontend():
         elif self.library.view == "track":
             self.library.view = "album"
 
-    def buttonB_released(self, press_duration):
+    def buttonB_released(self):
         print("Button release called")
         if self.library.view == "album": 
             self.library.prev()
             self.library.play()
-        if self.library.view == "track":
+        elif self.library.view == "track":
             if self.library.is_busy() and self.library.current_album.current_track == self.library.current_album.current_playing_track:
                 self.library.stop()
             else:
                 self.library.play()
 
-    def buttonY_released(self, press_duration):
+    def buttonY_released(self):
         print("Button release called")
         if self.library.view == "album":  
             self.library.next()
             self.library.play()
-        if self.library.view == "track":    
+        elif self.library.view == "track":    
             self.library.current_album.next()
 
-    def buttonX_released(self, press_duration):
+    def buttonX_released(self):
         print("Button release called")
         if self.library.view == "album":    
             self.library.view = "track"
@@ -339,6 +340,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
