@@ -68,6 +68,7 @@ class Buttons():
             "B": frontend.buttonB_released,
             "X": frontend.buttonX_released,
             "Y": frontend.buttonY_released}
+        logging.debug(f'Button {self.pin_lookup[btn.pin.number]} was pressed')
 
     def press_handle(self, btn):
         logging.debug(f'Button {self.pin_lookup[btn.pin.number]} was pressed')
@@ -121,6 +122,7 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
 
 
 
