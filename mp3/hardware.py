@@ -3,7 +3,7 @@ from gpiozero import PWMLED, Button
 from ST7789 import ST7789
 import logging
 #Logger:
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s') #Change level of logging output here
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s') #Change level of logging output here
 
 DISPLAY_W = 240
 DISPLAY_H = 240
@@ -124,6 +124,7 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
 
 
 
