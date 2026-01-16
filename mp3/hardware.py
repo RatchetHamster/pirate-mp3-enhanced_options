@@ -44,9 +44,9 @@ class Buttons():
         
         for pin, label in zip(self.PINS, self.LABELS):
             self.BUTTONS.append(Button(pin, pull_up=True, hold_time=2, hold_repeat=True))
-            self.BUTTONS[-1].when_pressed = press_handle
-            self.BUTTONS[-1].when_held = held_handle
-            self.BUTTONS[-1].when_released = release_handle
+            self.BUTTONS[-1].when_pressed = self.press_handle
+            self.BUTTONS[-1].when_held = self.held_handle
+            self.BUTTONS[-1].when_released = self.release_handle
             self.BUTTONS[-1].label = label
             self.BUTTONS[-1].was_held = False
             
@@ -120,6 +120,7 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
 
 
 
