@@ -43,12 +43,12 @@ class Buttons():
         self.BUTTONS=[]
         
         for pin, label in zip(self.PINS, self.LABELS):
-            self.BUTTON.append(Button(23, pull_up=True, hold_time=2, hold_repeat=True))
-            self.BUTTON[-1].when_pressed = press_handle
-            self.BUTTON[-1].when_held = held_handle
-            self.BUTTON[-1].when_released = release_handle
-            self.BUTTON[-1].label = label
-            self.BUTTON[-1].was_held = False
+            self.BUTTONS.append(Button(23, pull_up=True, hold_time=2, hold_repeat=True))
+            self.BUTTONS[-1].when_pressed = press_handle
+            self.BUTTONS[-1].when_held = held_handle
+            self.BUTTONS[-1].when_released = release_handle
+            self.BUTTONS[-1].label = label
+            self.BUTTONS[-1].was_held = False
             
         
         # Button call functions:
@@ -120,6 +120,7 @@ class Board(Screen, Buttons):
         self.is_shutdown = False
 
 #endregion
+
 
 
 
