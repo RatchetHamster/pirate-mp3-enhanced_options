@@ -85,11 +85,8 @@ def text_in_rect(draw, text, font, rect, line_spacing=1.1, textcolor=(0, 0, 0)):
 
 class Frontend():
     def __init__(self, library):
-        logging.debug("Frontend init started...")
         self.library = library
-        logging.debug("Library initalised")
         self.board = Board(self)
-        logging.debug("Board initalised")
 
         #Configureable:
         self.sleep_times = [None, 1*60*60, 2*60*60, 3*60*60, 4*60*60] # (sec) times that appear in sleep menu
@@ -109,12 +106,10 @@ class Frontend():
         self.display_splash()
         
         # Startup actions:
-        logging.info("Library setup called...")
         self.library.setup(self.start_at_random_album)
         self.startup_play()
         self.time_of_last_but_press = time.time()
         self.sleep_start_time = time.time()
-        logging.info("Frontend init complete.")
 
     def startup_play(self):
         if self.is_playonstartup:
@@ -351,6 +346,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
