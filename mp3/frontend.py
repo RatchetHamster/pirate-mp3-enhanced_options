@@ -52,7 +52,7 @@ def text_in_rect(draw, text, font, rect, line_spacing=1.1, textcolor=(0, 0, 0)):
 
             while (
                 len(words) > 0
-                and font.getsize(" ".join(line + [words[0]]))[0] <= width
+                and font.getbbox(" ".join(line + [words[0]]))[2] <= width
             ):
                 line.append(words.pop(0))
 
@@ -70,7 +70,7 @@ def text_in_rect(draw, text, font, rect, line_spacing=1.1, textcolor=(0, 0, 0)):
             bounds = [x2, y, x1, y + len(lines) * line_height]
 
             for line in lines:
-                line_width = font.getsize(line)[0]
+                line_width = font.getbbox(line)[2]
                 x = int(x1 + (width / 2) - (line_width / 2))
                 bounds[0] = min(bounds[0], x)
                 bounds[2] = max(bounds[2], x + line_width)
@@ -346,6 +346,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
