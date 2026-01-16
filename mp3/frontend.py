@@ -129,7 +129,7 @@ class Frontend():
         self.wake_from_idle()
 
     def buttonB_pressed(self):
-        loggin.info("Button press called")
+        logging.info("Button press called")
         self.wake_from_idle()
 
     def buttonX_pressed(self):
@@ -354,6 +354,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
