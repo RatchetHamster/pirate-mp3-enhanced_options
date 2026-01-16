@@ -94,7 +94,7 @@ class Frontend():
         self.is_playonstartup = True # Set to true to autoplay when turned on, false otherwise. 
         self.start_at_random_album = True #if true, pick random album
         self.num_track_skip_per_scroll = 2
-        self.persist_inc_time = 0.3 #(sec)
+        #self.persist_inc_time = 0.3 #(sec)
 
         self.is_enable_powersave = True
         self.powersave_dur = 10 #(sec)
@@ -134,12 +134,19 @@ class Frontend():
 
     def buttonA_held(self):
         print("Button held called")
-        pass
+        if self.library.view == "album":
+            if self.board.is_shutdown: 
+                self.board.pseduo_wake()
+                self.sleep_start_time = time.time()
+            else:
+                self.board.pseduo_shutdown()
+        elif self.library.view == "track":
+            self.library.view = "album"
 
     def buttonB_held(self):
         print("Button held called")
         if self.library.view == "album":
-            self.library.inc_vol(-0.05)
+            self.library.inc_vol(-0.1)
 
     def buttonX_held(self):
         print("Button held called")
@@ -150,7 +157,7 @@ class Frontend():
     def buttonY_held(self):
         print("Button held called")
         if self.library.view == "album":
-            self.library.inc_vol(0.05)
+            self.library.inc_vol(0.1)
         elif self.library.view == "track":
             for _ in range(self.num_track_skip_per_scroll):
                 self.library.current_album.next()
@@ -158,42 +165,29 @@ class Frontend():
     def buttonA_released(self, press_duration):
         print("Button release called")
         if self.library.view == "album":
-            if press_duration > self.board.long_press_dur: #Long Press
-                if self.board.is_shutdown: 
-                    self.board.pseduo_wake()
-                    self.sleep_start_time = time.time()
-                else:
-                    self.board.pseduo_shutdown()
-            else: # Short Press
-                self.sleep_index = (self.sleep_index+1)%len(self.sleep_times)
-                self.sleep_start_time = time.time()
+            self.sleep_index = (self.sleep_index+1)%len(self.sleep_times)
+            self.sleep_start_time = time.time()
         elif self.library.view == "track":
             self.library.view = "album"
-        self.persist_i["A"]=0
 
     def buttonB_released(self, press_duration):
         print("Button release called")
-        if self.library.view == "album":
-            if press_duration < self.board.long_press_dur: # short press  
-                self.library.prev()
-                self.library.play()
-            self.persist_i["B"] = 0
+        if self.library.view == "album": 
+            self.library.prev()
+            self.library.play()
         if self.library.view == "track":
             if self.library.is_busy() and self.library.current_album.current_track == self.library.current_album.current_playing_track:
                 self.library.stop()
             else:
                 self.library.play()
-        self.persist_i["B"]=0
 
     def buttonY_released(self, press_duration):
         print("Button release called")
-        if self.library.view == "album":
-            if press_duration < self.board.long_press_dur: #short press    
-                self.library.next()
-                self.library.play()
+        if self.library.view == "album":  
+            self.library.next()
+            self.library.play()
         if self.library.view == "track":    
             self.library.current_album.next()
-        self.persist_i["Y"]=0
 
     def buttonX_released(self, press_duration):
         print("Button release called")
@@ -205,7 +199,6 @@ class Frontend():
                 self.library.current_album.current_index=0
         elif self.library.view == "track":
             self.library.current_album.prev()
-        self.persist_i["X"]=0
     #endregion
 
     #region Sleep and Idle Checks:
@@ -346,6 +339,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
