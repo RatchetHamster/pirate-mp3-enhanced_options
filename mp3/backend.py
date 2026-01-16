@@ -9,7 +9,7 @@ from core import Core
 import logging
 #Logger:
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s') #Change level of logging output here
-
+eyed3.log.setLevel("ERROR")
 RESOURCES = pathlib.Path(__file__).resolve().parent / "resources"
 
 class Track:
@@ -156,6 +156,7 @@ class Library:
                 else:
                     self.albums[self.current_index].next()
                 self.play()
+
 
 
 
