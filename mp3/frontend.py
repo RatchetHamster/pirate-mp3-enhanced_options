@@ -9,7 +9,7 @@ from hardware import Board
 import logging
 #Logger:
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s') #Change level of logging output here
-
+eyed3.log.setLevel("ERROR")
 #region ----- Fonts and Resources -----
 
 font = ImageFont.truetype(UserFont, 16)
@@ -346,6 +346,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
