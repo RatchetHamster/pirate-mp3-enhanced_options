@@ -57,7 +57,7 @@ sudo apt install python3.13-dev
 git clone https://github.com/pimoroni/st7789-python
 cd st7789-python
 ./install.sh
-pip install rpi-gpio
+pip install https://github.com/Gadgetoid/PY_LGPIO/releases/download/0.2.2.0/lgpio-0.2.2.0.tar.gz
 
 # Service
 Move .service file to correct location  
