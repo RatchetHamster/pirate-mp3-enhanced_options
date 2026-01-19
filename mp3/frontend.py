@@ -89,8 +89,8 @@ class Frontend():
         self.board = Board(self)
 
         #Configureable:
-        self.sleep_times = [None, 1*60*60, 2*60*60, 3*60*60, 4*60*60] # (sec) times that appear in sleep menu
-        self.sleep_index = 3   #default index in the sleep times list - set to 0 to turn off by default
+        self.sleep_times = [None, 0.5*60*60, 1*60*60, 1.5*60*60, 2*60*60] # (sec) times that appear in sleep menu
+        self.sleep_index = 4   #default index in the sleep times list - set to 0 to turn off by default
         self.is_playonstartup = True # Set to true to autoplay when turned on, false otherwise. 
         self.start_at_random_album = True #if true, pick random album
         self.num_track_skip_per_scroll = 2
@@ -334,6 +334,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
