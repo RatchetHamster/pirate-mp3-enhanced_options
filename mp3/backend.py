@@ -29,7 +29,7 @@ class Track:
         audio = self.id3
         if audio is None:
             tag = eyed3.id3.Tag()
-            tag.file_info = eyed3.id3.FileInfo(self.path.stem)
+            tag.file_info = eyed3.id3.FileInfo(str(self.path))
             tag.save()
             self.id3 = eyed3.load(self.path)
         elif audio.tag is None:
@@ -171,6 +171,7 @@ class Library:
                 else:
                     self.albums[self.current_index].next()
                 self.play()
+
 
 
 
