@@ -25,7 +25,7 @@ class Track:
         self.id3 = eyed3.load(path)
         self.check_and_fix_tag(self)
 
-    def check_and_fix_tag(self)
+    def check_and_fix_tag(self):
         if self.id3 == None:
             self.id3 = eyed3.load(self.path, tag_version(2,3,0))
             self.id3.tag = eyed3.id3.Tag()
@@ -167,6 +167,7 @@ class Library:
                 else:
                     self.albums[self.current_index].next()
                 self.play()
+
 
 
 
