@@ -29,15 +29,16 @@ class Track:
         audio = self.id3
         print(self.path)
         if audio is None:
-            audio = eyed3.core.AudioFile(self.path)
-            audio.tag = eyed3.id3.Tag()
-            audio.tag.file_info = eyed3.id3.FileInfo(self.path)
-            audio.tag.title = f"{self.path.stem[:-4]}"
-            audio.tag.save()
+            tag = eyed3.id3.Tag()
+            tag.file_info = eyed3.id3.FileInfo(self.path)
+            tag.save()
+            self.id3 = eyed3.load(self.path)
         elif audio.tag is None:
             audio.initTag()
             audio.tag.title = f"{self.path.stem[:-4]}"
             audio.tag.save()
+            self.id3 = eyed3.load(self.path)
+        
 
     @property
     def title(self):
@@ -171,6 +172,7 @@ class Library:
                 else:
                     self.albums[self.current_index].next()
                 self.play()
+
 
 
 
