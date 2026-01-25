@@ -32,7 +32,6 @@ class Track:
             self.id3.tag.artist = "A"
             self.id3.tag.title = f"{self.path.stem[:-4]}"
             self.id3.save()
-            self.id3.load(path)
 
     @property
     def title(self):
@@ -166,6 +165,7 @@ class Library:
                 else:
                     self.albums[self.current_index].next()
                 self.play()
+
 
 
 
