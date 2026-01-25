@@ -26,12 +26,17 @@ class Track:
         self.check_and_fix_tag()
 
     def check_and_fix_tag(self):
-        if self.id3 == None:
-            self.id3 = eyed3.load(self.path)
-            self.id3.initTag()
-            self.id3.tag.artist = "A"
-            self.id3.tag.title = f"{self.path.stem[:-4]}"
-            self.id3.save()
+        audio = self.id3
+        if audio is None:
+            audio = eyed3.core.AudioFile(self.path)
+            audio.tag = eyed3.id3.Tag()
+            audio.tag.file_info = eyed3.id3.FileInfo(self.path)
+            audio.tag.title = f"{self.path.stem[:-4]}"
+            audio.tag.save()
+        elif audio.tag is None:
+            audio.initTag()
+            audio.tag.title = f"{self.path.stem[:-4]}"
+            audio.tag.save()
 
     @property
     def title(self):
@@ -165,6 +170,7 @@ class Library:
                 else:
                     self.albums[self.current_index].next()
                 self.play()
+
 
 
 
