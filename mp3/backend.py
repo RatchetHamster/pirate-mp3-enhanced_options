@@ -27,6 +27,7 @@ class Track:
 
     def check_and_fix_tag(self):
         audio = self.id3
+        print(self.path)
         if audio is None:
             audio = eyed3.core.AudioFile(self.path)
             audio.tag = eyed3.id3.Tag()
@@ -170,6 +171,7 @@ class Library:
                 else:
                     self.albums[self.current_index].next()
                 self.play()
+
 
 
 
