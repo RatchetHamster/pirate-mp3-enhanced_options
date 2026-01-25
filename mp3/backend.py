@@ -23,6 +23,17 @@ class Track:
         self.path = path
         logging.debug(f'Loading: {path}')
         self.id3 = eyed3.load(path)
+        self.check_and_fix_tag(self)
+
+    def check_and_fix_tag(self)
+        if self.id3 == None:
+            self.id3 = eyed3.load(self.path, tag_version(2,3,0))
+            self.id3.tag = eyed3.id3.Tag()
+            self.id3.file_info = eyed3.id3.FileInfo(f"{self.path.stem}")
+            self.id3.tag.artist = "A"
+            self.id3.tag.title = f"{self.path.stem[:-4]}"
+            self.id3.save()
+            self.id3.load(path)
 
     @property
     def title(self):
@@ -156,6 +167,7 @@ class Library:
                 else:
                     self.albums[self.current_index].next()
                 self.play()
+
 
 
 
