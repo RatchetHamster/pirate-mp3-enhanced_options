@@ -1,6 +1,7 @@
 import math
 import os
 import time
+import datetime
 from PIL import Image, ImageFont, ImageDraw
 from fonts.ttf import RobotoMedium as UserFont
 from datetime import timedelta
@@ -91,6 +92,8 @@ class Frontend():
         #Configureable:
         self.sleep_times = [None, 0.5*60*60, 1*60*60, 1.5*60*60, 2*60*60] # (sec) times that appear in sleep menu
         self.sleep_index = 4   #default index in the sleep times list - set to 0 to turn off by default
+        self.night_start = (22,0)
+        self.night_end = (6,0)
         self.is_playonstartup = True # Set to true to autoplay when turned on, false otherwise. 
         self.start_at_random_album = True #if true, pick random album
         self.num_track_skip_per_scroll = 2
@@ -131,8 +134,9 @@ class Frontend():
     def buttonA_held(self):
         if self.library.view == "album":
             if self.board.is_shutdown: 
-                self.board.pseduo_wake()
-                self.sleep_start_time = time.time()
+                if not self.is_in_night_house(datetime.datetime.now()):
+                    self.board.pseduo_wake()
+                    self.sleep_start_time = time.time()
             else:
                 self.board.pseduo_shutdown()
                 
@@ -197,12 +201,24 @@ class Frontend():
     #endregion
 
     #region Sleep and Idle Checks:
+    def is_in_night_hours(self, now):
+        start = now.replace(hour=self.night_start[0], minute=self.night_start[1], second=0)
+        end = now.replace(hour=self.night_end[0], minute=self.night_end[1], second=0)
+
+        # Handle ranges that cross midnight
+        if start < end:
+            return start <= now < end
+        else:
+            return now >= start or now < end
+    
     def get_sleep_time_left(self):
         if self.sleep_times[self.sleep_index] != None:
             return self.sleep_times[self.sleep_index] - (time.time() - self.sleep_start_time)
         return None
 
     def check_sleep_idle(self):
+        if self.is_in_night_hours(datetime.datetime.now()):
+            self.board.pseduo_shutdown()
         if not self.board.is_shutdown:
             if self.sleep_times[self.sleep_index] != None:
                 if self.get_sleep_time_left() < 0:
@@ -334,6 +350,7 @@ class Frontend():
         self.canvas.paste(splash, (0, 0), None)
         self.board.display.display(self.canvas)
 #endregion
+
 
 
 
